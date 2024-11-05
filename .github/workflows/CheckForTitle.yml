@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI Pipeline Check for Title
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
       - main # trigger on PRs targeting the main branch
 
 jobs:
-  test:
-    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+  check-title:
+    runs-on: ubuntu-latest
 
     steps:
       # Checkout the repository
@@ -23,12 +23,18 @@ jobs:
         with:
           node-version: '16' # Use the desired Node.js version
 
-      # Install dependencies
-      - name: Install dependencies
-        run: npm install
-
-      # Run tests
-      - name: Run tests
-        run: npm test # This will run your Mocha tests
-
-      # Optionally, you can add a step to upload test results if needed
+      - name: Run title tag check
+        run: |
+          chmod +x ./check-title.sh
+          ./check-title.sh
+          
+      - name: Proceed with the pipeline (if title tag exists)
+        if: success()  # This ensures the next step runs only if the previous step was successful
+        run: |
+          echo "Proceeding with the rest of the pipeline since the title tag exists."
+          # Add additional steps here for further actions, e.g., building, testing, etc.
+          
+      - name: Abort pipeline (if title tag is missing)
+        if: failure()  # This ensures this step runs only if the previous step failed
+        run: |
+          echo "Aborting pipeline because the title tag is missing from index.html."
