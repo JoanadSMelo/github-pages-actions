@@ -1,0 +1,40 @@
+name: Swap index.html and index_v2.html
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to the main branch
+  workflow_dispatch:  # Allows manual triggering of the workflow
+
+jobs:
+  swap-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Swap the contents of index.html and index_v2.html
+      - name: Swap file contents
+        run: |
+          # Check if both files exist before proceeding
+          if [ -f "index.html" ] && [ -f "index_v2.html" ]; then
+            # Swap the files by using a temporary file
+            mv index.html index.html.tmp
+            mv index_v2.html index.html
+            mv index.html.tmp index_v2.html
+          else
+            echo "One or both files are missing. Aborting swap."
+            exit 1
+          fi
+
+      # Step 3: Commit the changes
+      - name: Commit swapped files
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add index.html index_v2.html
+          git commit -m "Swap contents of index.html and index_v2.html"
+          git push
+
