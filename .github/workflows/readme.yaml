@@ -25,7 +25,7 @@ jobs:
           node-version: '16'
 
       - name: install dependencies
-        run: npm install 'jsdom'
+        run: npm install jsdom
       
       - name: Testing
         run: node -e "
