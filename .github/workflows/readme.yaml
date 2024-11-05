@@ -44,7 +44,8 @@ jobs:
           const readmeContent = \`# \${title}\n\n\${description}\n\nThis README was generated automatically from index.html.\`;
           
           // Write to README.md
-          fs.writeFileSync('README.md', readmeContent);"
+          fs.writeFileSync('README.md', readmeContent);
+          "
           
       - name: GitPull
         run: |    
@@ -53,4 +54,3 @@ jobs:
             git add README.md
             git commit -m "Auto-generate README from index.html"
             git push
- 
